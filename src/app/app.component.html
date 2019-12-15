@@ -1,20 +1,81 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
-</div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/cli">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
+<div style="width:100%;">
+  <div class="row fileRow">
+    <app-import-file (onChanged)="changeText($event)" [title]="'Import'"></app-import-file>
+    <app-export-file [nameFile]="'encryptedSystem'" [text]="textInput" [title]="'Export'"></app-export-file>
+  </div>
+  <form class="form">
+    <mat-form-field class="text">
+      <textarea matInput style="height:300px;" [value]="textInput" (input)="doTextareaValueChange($event)"
+        placeholder="Input your secret key"></textarea>
+    </mat-form-field>
+    <div class="tools">
+      <div class="selectAlgoritm">
+        <mat-label>Algorithm</mat-label>
+        <mat-select [(value)]="selectedAlgorithm">
+          <mat-option *ngFor="let alg of algorithms" [value]="alg.value">
+            {{alg.viewValue}}
+          </mat-option>
+        </mat-select>
+      </div>
+      <button class="btn" mat-raised-button (click)="encrypt(textInput,shift)">Encrypt</button>
+      <button class="btn" mat-raised-button (click)="decrypt(textInput,shift)">Decrypt</button>
 
+      <div class="toolKoef selectAlgorithm" *ngIf="selectedAlgorithm == 1">
+        <mat-select [(value)]="selectedShiff">
+          <mat-option *ngFor="let item of shiffsTritemius" [value]="item.value">
+            {{item.viewValue}}
+          </mat-option>
+        </mat-select>
+        <h3>Koef</h3>
+        <div *ngIf="selectedShiff == 0">
+          <div>A = <input type="number" [(ngModel)]="AKoef" class="form-control koef" matInput name="value"
+              placeholder="Input A" /></div>
+          <div>B = <input type="number" [(ngModel)]="BKoef" class="form-control koef" matInput name="value"
+              placeholder="Input B" /></div>
+        </div>
+        <div *ngIf="selectedShiff == 1">
+          <div>A = <input type="number" [(ngModel)]="AKoef" class="form-control koef" matInput name="value"
+              placeholder="Input A" /></div>
+          <div>B = <input type="number" [(ngModel)]="BKoef" class="form-control koef" matInput name="value"
+              placeholder="Input B" /></div>
+          <div>C = <input type="number" [(ngModel)]="CKoef" class="form-control koef" matInput name="value"
+              placeholder="Input C" /></div>
+        </div>
+        <div *ngIf="selectedShiff == 2">
+          <div>Your text = <input type="text" [(ngModel)]="gaslo" class="form-control koef" matInput name="value"
+              placeholder="Your text" /></div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="selectedAlgorithm == 2">
+      <mat-form-field class="text key">
+        <input [(ngModel)]="gammaText" class="form-control" matInput name="value" placeholder="Gamma" />
+      </mat-form-field>
+      <app-import-file (onChanged)="changeGamma($event)" [title]="'Import Gamma'"></app-import-file>
+      <app-export-file [nameFile]="'encryptedSystem_gamma'" [text]="gammaText" [title]="'Export Gamma'"></app-export-file>
+    </div>
+    <mat-form-field class="text key" *ngIf="selectedAlgorithm == 0 ||selectedAlgorithm == 1">
+      <input type="number" [(ngModel)]="shift" class="form-control" matInput name="value" placeholder="Shift" />
+    </mat-form-field>
+  </form>
+  <div class="form">
+    <div>
+      <h3>Brute force</h3>
+      <mat-slider style="width:500px;" class="example-margin" [min]="-100" [max]="100" [(ngModel)]="value"
+        (change)="bruteForceChange($event)" thumbLabel [displayWith]="formatLabel" [vertical]="vertical">
+      </mat-slider>
+    </div>
+    <div>
+      <h3>Current key</h3>
+      {{bruteForceKey}}
+    </div>
+    <div>
+      <h3>Result:</h3>
+      {{bruteForceValue}}
+    </div>
+  </div>
+
+
+
+</div>

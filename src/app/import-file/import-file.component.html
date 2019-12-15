@@ -1,0 +1,7 @@
+<div class="form-group">
+  <input style="display:none;" #fileSelect type="file" id="file"  (change)="handleFileInput($event.target.files)" >
+  <button mat-button color="warn" (click)="fileSelect.click()">
+    <mat-icon>file_upload</mat-icon>
+    {{title}}
+</button>
+</div>

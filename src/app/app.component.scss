@@ -1,0 +1,48 @@
+  .text {
+    width: 500px;
+    margin: 50px;
+    margin:0px 50px;
+  }
+
+  .key {
+    width: 100px;
+  }
+.selectAlgoritm{
+  width:150px;
+  margin-bottom: 50px;
+}
+  .form {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 500px;
+  }
+
+  .btn {
+    height: 30px;
+    margin-bottom: 50px;
+  }
+
+  .tools {
+    display: flex;
+    height: 500px;
+    flex-flow: column nowrap;
+    justify-content: center;
+  }
+
+  .toolKoef{
+  }
+
+  .koef{
+    width:80px;
+  }
+
+  .row{
+    display:flex;
+    flex-flow: row nowrap;
+  }
+
+  .fileRow{
+    justify-content: center;
+    margin-top:20px;
+  }
