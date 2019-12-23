@@ -46,14 +46,22 @@
           <div>Your text = <input type="text" [(ngModel)]="gaslo" class="form-control koef" matInput name="value"
               placeholder="Your text" /></div>
         </div>
+      
       </div>
     </div>
     <div *ngIf="selectedAlgorithm == 2">
-      <mat-form-field class="text key">
+      <mat-form-field class="text key" >
         <input [(ngModel)]="gammaText" class="form-control" matInput name="value" placeholder="Gamma" />
       </mat-form-field>
       <app-import-file (onChanged)="changeGamma($event)" [title]="'Import Gamma'"></app-import-file>
       <app-export-file [nameFile]="'encryptedSystem_gamma'" [text]="gammaText" [title]="'Export Gamma'"></app-export-file>
+    </div>
+    <div *ngIf="selectedAlgorithm == 3">
+      <mat-form-field class="text key" style="width:500px">
+        <textarea [(ngModel)]="poem" class="form-control" matInput name="value" placeholder="Poem" ></textarea>
+      </mat-form-field>
+      <app-import-file (onChanged)="changePoem($event)" [title]="'Import poem'"></app-import-file>
+      <app-export-file [nameFile]="'encryptedSystem_poem'" [text]="poem" [title]="'Export poem'"></app-export-file>
     </div>
     <mat-form-field class="text key" *ngIf="selectedAlgorithm == 0 ||selectedAlgorithm == 1">
       <input type="number" [(ngModel)]="shift" class="form-control" matInput name="value" placeholder="Shift" />

@@ -25,13 +25,13 @@ export class AppComponent {
     { value: 0, viewValue: 'Line' },
     { value: 1, viewValue: 'Not line' },
     { value: 2, viewValue: 'Gaslo' },
-
   ]
 
   algorithms: any = [
     { value: 0, viewValue: 'Caesar Cipher' },
     { value: 1, viewValue: 'Trithemius Cipher' },
-    { value: 2, viewValue: 'Gamma Mod' }
+    { value: 2, viewValue: 'Gamma Mod' },
+    { value: 3, viewValue: 'Poem Cipher' }
   ];
 
 
@@ -40,6 +40,7 @@ export class AppComponent {
       case 0: this.textInput = this.ceaserCrypt(text, shift); break;
       case 1: this.textInput = this.tretemiusEncode(text, shift); break;
       case 2: this.textInput = this.modEncryptOrDecrypt(text); break;
+      case 3: this.textInput = this.bookEncrypt(text, this.createBookDictionary()); break;
     }
   }
 
@@ -67,6 +68,7 @@ export class AppComponent {
       case 0: this.encrypt(textInput, shift * -1); break;
       case 1: this.textInput = this.tretemiusDecode(textInput, shift); break;
       case 2: this.textInput = this.modEncryptOrDecrypt(textInput); break;
+      case 3: this.textInput = this.bookDecrypt(textInput, this.createBookDictionary()); break;
     }
   }
 
@@ -148,8 +150,113 @@ export class AppComponent {
   changeText(newValue: String) {
     this.textInput = newValue;
   }
+  
   changeGamma(newValue: String) {
     this.gammaText = newValue;
   }
+
+  changePoem(newValue:String){
+    this.poem = newValue;
+  }
+
+  shuffle(array) {
+    var currentIndex = array.length, temporaryValue, randomIndex;
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+
+      // Pick a remaining element...
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+
+      // And swap it with the current element.
+      temporaryValue = array[currentIndex];
+      array[currentIndex] = array[randomIndex];
+      array[randomIndex] = temporaryValue;
+    }
+
+    return array;
+  }
+
+  //   # Алгоритм віршованого шифрування:
+  // #   1.	Вибрати вірш для використання в якості ключа шифрування.
+  // #   2.	Пронумерувати  всі стовпчики і рядки вибраного ключа шифрування двозначними цифрами: CC SS відповідно.
+  // #   3.	Символу M  вхідного повідомлення поставити у відповідність 4-значний код  CС/SS такого ж вибраного випадково символу ключа шифрування. Тут чисельник кожного дробу - номер рядка, а знаменник - номер стовпчика.
+  // #   4.	Код CС/SS занести до шифрограми і додати кому.
+  // #   5.	Повторити п.п.3-4  для кожного символу повідомлення, що шифрується
+
+  bookEncrypt(text, dictionary) {
+    let output = [];
+    let letterDict = {};
+
+    for (const charElem of text) {
+      this.shuffle(dictionary);
+      letterDict = this.findLetterInDictionary(dictionary, charElem);
+      if (letterDict == undefined)
+        throw `Letter not found: ${charElem}`;
+
+      output.push(`${letterDict['row']}/${letterDict['col']}`);
+    }
+    return output.join(",");
+  }
+
+  findLetterInDictionary(dictionary: any, char: any): {} {
+    for (const letter of dictionary) {
+      if (char == letter['char'])
+        return letter;
+    }
+  }
+
+  // # Алгоритм розшифрування з використанням вірша:
+  // #   1.	Для елемента коду CС/SS криптограми визначити  номер стовпчика CС  і рядка SS зашифрованого символу.
+  // #   2.	Знайти в ключі шифрування символ, що знаходиться на перетині CС колонки і SS-рядка.
+  // #   3.	Записати знайдений символ в якості розшифрованого символу.
+  // #   4.	Повторити п.п.1-3 для кожного елементу коду, відокремленого за допомогою ком.
+
+  bookDecrypt(text, dictionary) {
+    let plain = '';
+    let row = 0;
+    let col = 0;
+
+    let encodes = text.split(",");
+
+    for (const code of encodes) {
+      row = parseInt(code.split('/')[0]);
+      col = parseInt(code.split('/')[1]);
+      let letter = this.findLetterUsingCode(row, col, dictionary);
+      if (letter == undefined)
+        throw ("Something went wrong, couldn't find letter in poem.")
+      plain += letter
+    }
+    return plain;
+
+  }
+
+  findLetterUsingCode(row: number, col: number, dictionary: any) {
+    for (const letter of dictionary) {
+      if (row == letter['row'] && col == letter['col'])
+        return letter['char'];
+    }
+  }
+
+  poem: String;
+
+  createBookDictionary() {
+    let dictionary = [];
+    let row = 0;
+    let col = 0;
+
+    for (const charElement of this.poem) {
+      dictionary.push({ char: charElement, row: row, col: col });
+      col += 1;
+      if (charElement == '\n') {
+        row += 1;
+        col = 0;
+      }
+    }
+    return dictionary;
+  }
+
+
 
 }
